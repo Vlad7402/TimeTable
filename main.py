@@ -122,8 +122,17 @@ def logout():
 @login_required
 def TimeTable():
     info = current_user.name + ", " + current_user.group
-    flash("some textFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
+    flash("some text FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
     return render_template("TimeTable.html", info=info)
+
+
+@app.route("/TimeTableEdit")
+@login_required
+def TimeTableEdit():
+    info = current_user.name + ", " + current_user.group
+    week = ['Понедельник', 'Вторник', 'Среда', "Четверг", "Пятница", "Суббота", "Воскресенье"]
+    counter = ['week_1', 'week_2']
+    return render_template("TimeTableEdit.html", info=info, week=week, counter=counter)
 
 
 if __name__ == "__main__":

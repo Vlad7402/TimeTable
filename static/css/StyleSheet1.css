@@ -212,3 +212,7 @@ display: flex;
     margin-top: 3px;
     margin-left: auto;
 }
+.inner_box{
+    flex-direction:row;
+    display: flex;
+}

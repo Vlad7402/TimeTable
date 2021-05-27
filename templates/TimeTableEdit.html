@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title%}
+Редактирование расписание ЧелГУ
+{% endblock %}
+
+{% block userinfo%}
+{{info}}
+{% endblock %}
+
+{% block article%}
+ <div class="boxConteiner">
+     <div class="box">
+         <h1 class="bigText" style="margin-left:15px"> Редактирование расписания</h1>
+          <form class="form" id="week_select", style="display:block">
+              <span> Выберете неделю:</span>
+              <label for="first"> Первая неделя </label>
+              <input type="radio" name="week" id="first" value="1" onclick="ShowLeadForm(this)">
+              <label for="second"> Вторая неделя </label>
+              <input type="radio" name="week" id="second" value="2" onclick="ShowStudentForm(this)">
+          </form>
+         <div class="boxConteiner">
+             <form>
+                 {% for week_num in counter%}
+                    <div id="week_num">
+                        {% for day in week %}
+                            <div class="inner_box">
+                                <div class="box">
+                                    <div class="day">
+                                        {{day}}
+                                    </div>
+                                    <div class="inputLine">
+                                        <label for="sub_name"> Введите название предмета </label>
+                                        <span class="inputFildContainer">
+                                            <input type="text" name="name" id="sub_name" placeholder="Английский яз." class="inputFild"/>
+                                        </span>
+                                    </div>
+                                    <div class="inputLine">
+                                        <label for="teacher_name"> Введите фамилию преподавателя: </label>
+                                        <span class="inputFildContainer">
+                                            <input type="text" name="name" id="teacher_name" placeholder="Ковальчук Л.П." class="inputFild"/>
+                                        </span>
+                                    </div>
+                                    <div class="inputLine">
+                                        <label for="class"> Введите аудиторию: </label>
+                                        <span class="inputFildContainer">
+                                            <input type="text" name="name" id="class" placeholder="413" class="inputFild"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                 {% endfor %}
+             </form>
+         </div>
+     </div>
+ </div>
+<script src="{{url_for('static', filename='js/TimeTable.js')}}" charset="windows-1258"></script>
+{% endblock %}
