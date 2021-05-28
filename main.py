@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, url_for, redirect, make_response, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_manager, login_user, login_required, logout_user, current_user
 import datetime
@@ -19,6 +20,20 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(32), nullable=False)
     userType = db.Column(db.Integer, nullable=False)
+
+
+class TimeTable(db.Model):
+    __tablename__ = 'time_table'
+
+    id = db.Column(db.Integer, primary_key=True)
+    group = db.Column(db.String(10), nullable=False)
+    time_table = relationship("Weeks", back_populates="time_table")
+
+
+class Weeks(db.Model):
+    __tablename__ = 'weeks'
+
+    id = db.Column(db.Integer, primary_key=True)
 
     def __repr__(self):
         return '<Users %r>' % self.id
@@ -126,13 +141,18 @@ def TimeTable():
     return render_template("TimeTable.html", info=info)
 
 
-@app.route("/TimeTableEdit")
+@app.route("/TimeTableEdit", methods=['POST', 'GET'])
 @login_required
 def TimeTableEdit():
-    info = current_user.name + ", " + current_user.group
-    week = ['Понедельник', 'Вторник', 'Среда', "Четверг", "Пятница", "Суббота", "Воскресенье"]
-    counter = ['week_1', 'week_2']
-    return render_template("TimeTableEdit.html", info=info, week=week, counter=counter)
+    if request.method == "POST":
+        email = request.form['sn_p1_d1_week1']
+        return redirect(url_for('TimeTable'))
+    else:
+        info = current_user.name + ", " + current_user.group
+        week = ['Понедельник', 'Вторник', 'Среда', "Четверг", "Пятница", "Суббота", "Воскресенье"]
+        week_counter = ['week1', 'week2']
+        pair_num = ['1', '2', '3', "4", "5", "6", "7", "8"]
+        return render_template("TimeTableEdit.html", info=info, week=week, week_counter=week_counter, pair_num=pair_num)
 
 
 if __name__ == "__main__":

@@ -12,49 +12,69 @@
  <div class="boxConteiner">
      <div class="box">
          <h1 class="bigText" style="margin-left:15px"> Редактирование расписания</h1>
-          <form class="form" id="week_select", style="display:block">
+          <form class="form" id="week_select" style="display:block">
               <span> Выберете неделю:</span>
               <label for="first"> Первая неделя </label>
-              <input type="radio" name="week" id="first" value="1" onclick="ShowLeadForm(this)">
+              <input type="radio" name="week" id="first" value="1" onclick="show_week('week1')">
               <label for="second"> Вторая неделя </label>
-              <input type="radio" name="week" id="second" value="2" onclick="ShowStudentForm(this)">
+              <input type="radio" name="week" id="second" value="2" onclick="show_week('week2')">
           </form>
          <div class="boxConteiner">
-             <form>
-                 {% for week_num in counter%}
-                    <div id="week_num">
-                        {% for day in week %}
-                            <div class="inner_box">
-                                <div class="box">
-                                    <div class="day">
-                                        {{day}}
-                                    </div>
-                                    <div class="inputLine">
-                                        <label for="sub_name"> Введите название предмета </label>
-                                        <span class="inputFildContainer">
-                                            <input type="text" name="name" id="sub_name" placeholder="Английский яз." class="inputFild"/>
-                                        </span>
-                                    </div>
-                                    <div class="inputLine">
-                                        <label for="teacher_name"> Введите фамилию преподавателя: </label>
-                                        <span class="inputFildContainer">
-                                            <input type="text" name="name" id="teacher_name" placeholder="Ковальчук Л.П." class="inputFild"/>
-                                        </span>
-                                    </div>
-                                    <div class="inputLine">
-                                        <label for="class"> Введите аудиторию: </label>
-                                        <span class="inputFildContainer">
-                                            <input type="text" name="name" id="class" placeholder="413" class="inputFild"/>
-                                        </span>
-                                    </div>
+             <form class="form" id="Form" name="form" method="post">
+                 {% for week_num in week_counter%}
+                     <div id="{{week_num}}" style="display:none">
+                         {% for day in week %}
+                             <div class="inner_box">
+                                 <div class="box">
+                                     <div class="day">
+                                         {{day}}
+                                     </div>
+                                     <br>
+                                     {% for pair in pair_num %}
+                                     <div>
+                                         Пара номер {{pair}}
+                                     </div>
+                                     <br>
+                                     <div id="pair{{pair}}_day{{(week.index(day) + 1)}}_{{week_num}}">
+                                         <div class="inline_radio" id="{{pair}}_{{(week.index(day) + 1)}}_{{week_num}}" style="display:block">
+                                             <span> Есть пара?</span>
+                                             <label for="Y_{{pair}}_{{(week.index(day) + 1)}}_{{week_num}}"> Да </label>
+                                             <input type="radio" name="pair_exist_{{pair}}_{{(week.index(day) + 1)}}_{{week_num}}" id="Y_{{pair}}_{{(week.index(day) + 1)}}_{{week_num}}" onclick="show_pair(this)">
+                                             <label for="N_{{pair}}_{{(week.index(day) + 1)}}_{{week_num}}"> Нет </label>
+                                             <input type="radio" name="pair_exist_{{pair}}_{{(week.index(day) + 1)}}_{{week_num}}" id="N_{{pair}}_{{(week.index(day) + 1)}}_{{week_num}}" onclick="show_pair(this)" checked>
+                                         </div>
+                                         <div id="p{{pair}}_d{{(week.index(day) + 1)}}_{{week_num}}" style="display:none">
+                                             <div class="inputLine">
+                                                 <label for="sn_p{{pair}}_d{{(week.index(day) + 1)}}_{{week_num}}"> Введите название предмета </label>
+                                                 <span class="inputFildContainer">
+                                                     <input type="text" name="sn_p{{pair}}_d{{(week.index(day) + 1)}}_{{week_num}}" id="sn_p{{pair}}_d{{(week.index(day) + 1)}}_{{week_num}}" placeholder="Английский яз." class="inputFild"/>
+                                                 </span>
+                                             </div>
+                                             <div class="inputLine">
+                                                 <label for="tn_p{{pair}}_d{{(week.index(day) + 1)}}_{{week_num}}"> Введите фамилию преподавателя: </label>
+                                                 <span class="inputFildContainer">
+                                                     <input type="text" name="tn_p{{pair}}_d{{(week.index(day) + 1)}}_{{week_num}}" id="tn_p{{pair}}_d{{(week.index(day) + 1)}}_{{week_num}}" placeholder="Ковальчук Л.П." class="inputFild"/>
+                                                 </span>
+                                             </div>
+                                             <div class="inputLine">
+                                                 <label for="c_p{{pair}}_d{{(week.index(day) + 1)}}_{{week_num}}"> Введите аудиторию: </label>
+                                                 <span class="inputFildContainer">
+                                                     <input type="text" name="c_p{{pair}}_d{{(week.index(day) + 1)}}_{{week_num}}" id="c_p{{pair}}_d{{(week.index(day) + 1)}}_{{week_num}}" placeholder="413" class="inputFild"/>
+                                                 </span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <br>
+                                     {% endfor %}
                                 </div>
                             </div>
-                        {% endfor %}
-                    </div>
+                         {% endfor %}
+                     </div>
                  {% endfor %}
+                 <input type="submit" name="SubmitButton" value="Завершить и отправить" id="SubmitButton" class="ButtonReference" style="display:none">
              </form>
          </div>
      </div>
  </div>
-<script src="{{url_for('static', filename='js/TimeTable.js')}}" charset="windows-1258"></script>
+<script src="{{url_for('static', filename='js/TimeTableEdit.js')}}" charset="windows-1258"></script>
 {% endblock %}
