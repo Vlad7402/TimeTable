@@ -13,6 +13,11 @@
  <div class="boxConteiner">
      <div class="box">
          <h1 class="bigText" style="margin-left:15px"> Расписание</h1>
+         <div id="daily_timetable">
+             {% for pair in pairs %}
+             {%  %}
+             {% endfor %}
+         </div>
      </div>
  </div>
 {% with messages = get_flashed_messages() %}

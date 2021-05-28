@@ -21,19 +21,19 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(32), nullable=False)
     userType = db.Column(db.Integer, nullable=False)
 
+    def __repr__(self):
+        return '<Users %r>' % self.id
 
-class TimeTable(db.Model):
-    __tablename__ = 'time_table'
 
+class Pair(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     group = db.Column(db.String(10), nullable=False)
-    time_table = relationship("Weeks", back_populates="time_table")
-
-
-class Weeks(db.Model):
-    __tablename__ = 'weeks'
-
-    id = db.Column(db.Integer, primary_key=True)
+    week_num = db.Column(db.Integer, nullable=False)
+    day_num = db.Column(db.Integer, nullable=False)
+    pair_num = db.Column(db.Integer, nullable=False)
+    teacher = db.Column(db.String(32), nullable=True)
+    subject = db.Column(db.String(32), nullable=True)
+    classroom = db.Column(db.String(32), nullable=True)
 
     def __repr__(self):
         return '<Users %r>' % self.id
@@ -136,8 +136,8 @@ def logout():
 @app.route("/TimeTable")
 @login_required
 def TimeTable():
+    flash(current_user.id)
     info = current_user.name + ", " + current_user.group
-    flash("some text FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
     return render_template("TimeTable.html", info=info)
 
 
@@ -145,7 +145,7 @@ def TimeTable():
 @login_required
 def TimeTableEdit():
     if request.method == "POST":
-        email = request.form['sn_p1_d1_week1']
+        write_timetable_to_database(request.form, current_user.group)
         return redirect(url_for('TimeTable'))
     else:
         info = current_user.name + ", " + current_user.group
@@ -153,6 +153,40 @@ def TimeTableEdit():
         week_counter = ['week1', 'week2']
         pair_num = ['1', '2', '3', "4", "5", "6", "7", "8"]
         return render_template("TimeTableEdit.html", info=info, week=week, week_counter=week_counter, pair_num=pair_num)
+
+
+def is_week_firs():
+    current_data = datetime.datetime.now()
+    first_week_num = datetime.date(current_data.year, 9, 1).isocalendar()[1]
+    current_week_num = datetime.date(current_data.year, current_data.month, current_data.day).isocalendar()[1]
+    is_first_week_c = first_week_num % 2
+    return (current_week_num % 2) == is_first_week_c
+
+
+def write_timetable_to_database(form, group):
+    week_day = ['1', '2', '3', "4", "5", "6", "7"]
+    week_counter = ['1', '2']
+    pairs = ['1', '2', '3', "4", "5", "6", "7", "8"]
+    for week in week_counter:
+        for day in week_day:
+            for pair in pairs:
+                week_num = week
+                day_num = day
+                pair_num = pair
+                teacher_s = "tn_p" + pair + "_d" + day + "_week" + week
+                subject_s = "sn_p" + pair + "_d" + day + "_week" + week
+                classroom_s = "c_p" + pair + "_d" + day + "_week" + week
+                teacher = form[teacher_s]
+                subject = form[subject_s]
+                classroom = form[classroom_s]
+                pair_to_add = Pair(week_num=week_num, day_num=day_num, pair_num=pair_num, teacher=teacher, subject=subject, classroom=classroom, group=group)
+                db.session.add(pair_to_add)
+                db.session.commit()
+    return None
+
+
+def get_daily_timetable(group, week, day):
+    return Pair.query.filter_by(group=group, week_num=week, day_num=day).all()
 
 
 if __name__ == "__main__":
