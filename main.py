@@ -137,22 +137,56 @@ def logout():
 @login_required
 def TimeTable():
     flash(current_user.id)
+    pair_time = ['8:00-9:30', '9:40-11:10', '11:20-12:50', "13:15-14:45", "15:00-16:30", "16:40-18:10", "18:20-19:50", "19:55-21:25"]
     info = current_user.name + ", " + current_user.group
-    return render_template("TimeTable.html", info=info)
+    day_of_week = datetime.datetime.isoweekday(datetime.datetime.now())
+    week_num = None
+    pairs_tomorrow = None
+    pairs_this_week = None
+    pairs_next_week = None
+    pairs = ['1', '2', '3', "4", "5", "6", "7", "8"]
+    if is_week_firs():
+        week_num = 1
+        pairs_this_week = get_week_timetable(current_user.group, week_num)
+        pairs_next_week = get_week_timetable(current_user.group, week_num + 1)
+    else:
+        week_num = 2
+        pairs_this_week = get_week_timetable(current_user.group, week_num)
+        pairs_next_week = get_week_timetable(current_user.group, week_num - 1)
+    pairs_today = pairs_this_week[day_of_week-1]
+    if day_of_week == 7:
+        if is_week_firs():
+            pairs_tomorrow = get_daily_timetable(current_user.group, 2, 1)
+        else:
+            pairs_tomorrow = get_daily_timetable(current_user.group, 1, 1)
+    else:
+        pairs_tomorrow = get_daily_timetable(current_user.group, week_num, day_of_week + 1)
+    week = ['Понедельник', 'Вторник', 'Среда', "Четверг", "Пятница", "Суббота", "Воскресенье"]
+    lead = current_user.userType == 1
+    return render_template("TimeTable.html", info=info, pair_time=pair_time, pairs=pairs,
+                           week=week, pairs_today=pairs_today, pairs_tomorrow=pairs_tomorrow,
+                           pairs_this_week=pairs_this_week, pairs_next_week=pairs_next_week,
+                           day_of_week=day_of_week, week_num=week_num, lead=lead)
 
 
 @app.route("/TimeTableEdit", methods=['POST', 'GET'])
 @login_required
 def TimeTableEdit():
-    if request.method == "POST":
-        write_timetable_to_database(request.form, current_user.group)
-        return redirect(url_for('TimeTable'))
+    if current_user.userType == 1:
+        if request.method == "POST":
+            if does_timetable_exist(current_user.group):
+                delete_timetable_from_database(current_user.group)
+            write_timetable_to_database(request.form, current_user.group)
+            return redirect(url_for('TimeTable'))
+        else:
+            info = current_user.name + ", " + current_user.group
+            week = ['Понедельник', 'Вторник', 'Среда', "Четверг", "Пятница", "Суббота", "Воскресенье"]
+            week_counter = ['week1', 'week2']
+            pair_num = ['1', '2', '3', "4", "5", "6", "7", "8"]
+            return render_template("TimeTableEdit.html", info=info, week=week, week_counter=week_counter, pair_num=pair_num)
     else:
-        info = current_user.name + ", " + current_user.group
-        week = ['Понедельник', 'Вторник', 'Среда', "Четверг", "Пятница", "Суббота", "Воскресенье"]
-        week_counter = ['week1', 'week2']
-        pair_num = ['1', '2', '3', "4", "5", "6", "7", "8"]
-        return render_template("TimeTableEdit.html", info=info, week=week, week_counter=week_counter, pair_num=pair_num)
+        return redirect(url_for('TimeTable'))
+
 
 
 def is_week_firs():
@@ -185,8 +219,48 @@ def write_timetable_to_database(form, group):
     return None
 
 
+def write_timetable_to_database(form, group):
+    week_day = ['1', '2', '3', "4", "5", "6", "7"]
+    week_counter = ['1', '2']
+    pairs = ['1', '2', '3', "4", "5", "6", "7", "8"]
+    for week in week_counter:
+        for day in week_day:
+            for pair in pairs:
+                week_num = week
+                day_num = day
+                pair_num = pair
+                teacher_s = "tn_p" + pair + "_d" + day + "_week" + week
+                subject_s = "sn_p" + pair + "_d" + day + "_week" + week
+                classroom_s = "c_p" + pair + "_d" + day + "_week" + week
+                teacher = form[teacher_s]
+                subject = form[subject_s]
+                classroom = form[classroom_s]
+                pair_to_add = Pair(week_num=week_num, day_num=day_num, pair_num=pair_num, teacher=teacher, subject=subject, classroom=classroom, group=group)
+                db.session.add(pair_to_add)
+                db.session.commit()
+    return None
+
+
+def delete_timetable_from_database(group):
+    Pair.query.filter_by(group=group).delete()
+    db.session.commit()
+    return None
+
+
+def does_timetable_exist(group):
+    return not(Pair.query.filter_by(group=group).all() is None)
+
+
 def get_daily_timetable(group, week, day):
     return Pair.query.filter_by(group=group, week_num=week, day_num=day).all()
+
+
+def get_week_timetable(group, week):
+    week_day = ['1', '2', '3', "4", "5", "6", "7"]
+    res = []
+    for day in week_day:
+        res.append(get_daily_timetable(group, week, day))
+    return res
 
 
 if __name__ == "__main__":

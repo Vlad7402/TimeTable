@@ -219,3 +219,6 @@ display: flex;
 .inline_radio{
     display:block;
 }
+.daily_timetable{
+    margin-left:15px;
+}
