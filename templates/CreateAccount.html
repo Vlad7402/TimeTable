@@ -5,16 +5,86 @@
 {% endblock %}
 
 {% block userinfo%}
-Вы не авторизованы
 {% endblock %}
 
 {% block article%}
 <div class="boxConteiner" xmlns="http://www.w3.org/1999/html">
-     <div class="box">
-         <h1 class="bigText"> Созданине нового аккаунта</h1>
-         </br>
-         <form>
-         </form>
-     </div>
+    <div class="box">
+        <h1 class="bigText" style="margin-left:25px"> Созданине нового аккаунта</h1>
+        <br>
+        <form class="form" id="UserTypeSelect">
+            <span> Выберете тип пользователя:</span>
+            <label for="Lead"> Староста </label>
+            <input type="radio" name="UserType" id="Lead" value="Староста" onclick="ShowLeadForm(this)">
+            <label for="Student"> Ученик </label>
+            <input type="radio" name="UserType" id="Student" value="Ученик" onclick="ShowStudentForm(this)">
+        </form>
+        <form class="form" id="Form" name="form" style="display:none" method="post" onsubmit="return CheckRegistrationForm(this)">
+            <div class="inputLine">
+                <label for="firstName"> Введите фамилию: </label>
+                <span class="inputFildContainer">
+                    <input type="text" name="firstName" id="firstName" placeholder="Иванов" class="inputFild"/>
+                </span>
+            </div>
+            <div class="inputLine">
+                <label for="name"> Введите имя: </label>
+                <span class="inputFildContainer">
+                    <input type="text" name="name" id="name" placeholder="Иван" class="inputFild"/>
+                </span>
+            </div>
+            <div class="inputLine" id="LeadGroup" style="display:none">
+                <label for="Lgroup"> Введите наименование группы: </label>
+                <span class="inputFildContainer">
+                    <input type="text" name="group" id="Lgroup" placeholder="ПрИ-101" class="inputFild"/>
+                </span>
+            </div>
+            <div class="inputLine" id="StudentGroup" style="display:none">
+                <label for="Sgroup"> Выберете группу: </label>
+                <span class="inputFildContainer">
+                    <select id="Sgroup" size="1" required>
+                        <option value="0" selected>Группа</option>
+                        {% for group in groups %}
+                        <option value={{group}}>{{group}}</option>
+                        {% endfor %}
+                    </select>
+                </span>
+            </div>
+            <div class="inputLine">
+                <label for="email"> Введите почту: </label>
+                <span class="inputFildContainer">
+                    <input type="email" name="email" id="email" placeholder="example@example.ex" class="inputFild"/>
+                </span>
+            </div>
+            <div class="inputLine">
+                <label for="pass"> Введите пароль: </label>
+                <span class="inputFildContainer">
+                    <input type="password" name="pass" id="pass" placeholder="********" class="inputFild"/>
+                </span>
+            </div>
+            <div class="inputLine">
+                <label for="repass"> Повтоите пароль: </label>
+                <span class="inputFildContainer">
+                    <input type="password" name="repass" id="repass" placeholder="********" class="inputFild"/>
+                </span>
+            </div>
+            <div style="display:none">
+                <input type="number" name="userType" id="userType">
+            </div>
+            <input type="submit" name="SubmitButtonLead" value="Зарегистрироваться" id="SubmitButtonLead" class="ButtonReference">
+        </form>
+            {% if is_email_exist %}
+            <div class="error" id="error" style="display:flex">
+            Пользователь с такой почтой уже зарегистрирован
+            </div>
+            {% elif is_group_exist %}
+            <div class="error" id="error" style="display:flex">
+            Данная группа уже зарегистрирована
+            </div>
+            {% else %}
+            <div class="error" id="error">Трунь. Ошибок нет, всё хорошо</div>
+            {% endif %}
+    </div>
  </div>
+
+<script src="{{url_for('static', filename='js/CreatingAccount.js')}}" charset="windows-1258"></script>
 {% endblock %}

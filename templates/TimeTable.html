@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block title%}
+Расписание ЧелГУ
+{% endblock %}
+
+{% block userinfo%}
+{{info}}
+{% endblock %}
+
+{% block article%}
+
+ <div class="boxConteiner">
+     <div class="box">
+         <div id="daily_timetable" >
+             <h1 class="bigText" style="margin-left:15px"> Расписание на сегодня</h1>
+             <br>
+             {% if pairs_today %}
+             {% for pair in pairs_today %}
+             {% if pair.subject %}
+             <div class="daily_timetable">
+                 Пара номер {{pairs_today.index(pair) + 1}}, {{pair_time[pairs_today.index(pair)]}}
+             </div>
+             <br>
+             <div class="daily_timetable">
+                 Предмет: {{pair.subject}}
+             </div>
+             <div class="daily_timetable">
+                 Преподаватель: {{pair.teacher}}
+             </div>
+             <div class="daily_timetable">
+                 Аудитория: {{pair.classroom}}
+             </div>
+             <br>
+             {% endif %}
+             {% endfor %}
+             {% else %}
+             <div class="daily_timetable">
+                 В этот день пар нет
+             </div>
+             {% endif %}
+         </div>
+         <div id="tomorrow_timetable" style="display:none">
+             <h1 class="bigText" style="margin-left:15px"> Расписание на завтра</h1>
+             <br>
+             {% if pairs_tomorrow %}
+             {% for pair in pairs_tomorrow %}
+             {% if pair.subject %}
+             <div class="daily_timetable">
+                 Пара номер {{pairs_tomorrow.index(pair) + 1}}, {{pair_time[pairs_tomorrow.index(pair)]}}
+             </div>
+             <div class="daily_timetable">
+                 Предмет: {{pair.subject}}
+             </div>
+             <div class="daily_timetable">
+                 Преподаватель: {{pair.teacher}}
+             </div>
+             <div class="daily_timetable">
+                 Аудитория: {{pair.classroom}}
+             </div>
+             <br>
+             {% endif %}
+             {% endfor %}
+             {% else %}
+             <div class="daily_timetable">
+                 В этот день пар нет
+             </div>
+             {% endif %}
+         </div>
+         <div id="timetable_for_this_week" style="display:none">
+             <h1 class="bigText" style="margin-left:15px"> Расписание на эту неделю</h1>
+             {% for day in pairs_this_week %}
+             <div class="inner_box">
+                 <div class="box">
+                     <div class="day">
+                         {{week[pairs_this_week.index(day)]}}
+                     </div>
+                     <br>
+                     {% if day %}
+                     {% for pair in day %}
+                     {% if pair.subject %}
+                     <div>
+                         Пара номер {{day.index(pair) + 1}}, {{pair_time[day.index(pair)]}}
+                     </div>
+                     <br>
+                     <div>
+                         Предмет: {{pair.subject}}
+                     </div>
+                     <div>
+                         Преподаватель: {{pair.teacher}}
+                     </div>
+                     <div>
+                         Аудитория: {{pair.classroom}}
+                     </div>
+                     <br>
+                     {% endif %}
+                     {% endfor %}
+                     {% else %}
+                     <div>
+                         В этот день пар нет
+                     </div>
+                     {% endif %}
+                     <br>
+                 </div>
+             </div>
+             {% endfor %}
+         </div>
+         <div id="timetable_for_next_week" style="display:none">
+             <h1 class="bigText" style="margin-left:15px"> Расписание на следующую неделю</h1>
+             {% for day in pairs_next_week %}
+             <div class="inner_box">
+                 <div class="box">
+                     <div class="day">
+                         {{week[pairs_next_week.index(day)]}}
+                     </div>
+                     <br>
+                     {% if day %}
+                     {% for pair in day %}
+                     {% if pair.subject %}
+                     <div>
+                         Пара номер {{day.index(pair) + 1}}, {{pair_time[day.index(pair)]}}
+                     </div>
+                     <br>
+                     <div>
+                         Предмет: {{pair.subject}}
+                     </div>
+                     <div>
+                         Преподаватель: {{pair.teacher}}
+                     </div>
+                     <div>
+                         Аудитория: {{pair.classroom}}
+                     </div>
+                     <br>
+                     {% endif %}
+                     {% endfor %}
+                     {% else %}
+                     <div>
+                         В этот день пар нет
+                     </div>
+                     {% endif %}
+                     <br>
+                 </div>
+             </div>
+             {% endfor %}
+         </div>
+         <div class="BoxForButtons">
+             <div onclick="show_today()" class="ButtonReference" id="daily_timetable_btn" title="Создание нового аккаунта">
+                 Сегодня
+             </div>
+             <div onclick="show_tomorrow()" class="ButtonReference" id="tomorrow_timetable_btn" title="Подтверждение личности пользователя">
+                 Завтра
+             </div>
+             <div onclick="show_this_week()" class="ButtonReference" id="timetable_for_this_week_btn" title="Просмотр расписания">
+                 Эта неделя
+             </div>
+             <div onclick="show_next_week()" class="ButtonReference" id="timetable_for_next_week_btn" title="Создание нового аккаунта">
+                 След. неделя
+             </div>
+         </div>
+         <div class="BoxForButtons">
+             <a href="/" class="ButtonReference" id="to_main" title="Переход на главную страницу">
+                 На главную
+             </a>
+             <a href="/logout" class="ButtonReference" id="log_out" title="Выход из учётной записи">
+                 Выход
+             </a>
+             {% if lead %}
+             <a href="/TimeTableEdit" class="ButtonReference" id="edit" title="Редактирование расписание">
+                 Редактировать
+             </a>
+             {% endif %}
+         </div>
+     </div>
+ </div>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class=flashes id="message_box">
+            <img id="message_cross" src="{{url_for('static', filename='photos/cross.png')}}" alt="Alternate Text" title="Закрыть сообщение" onclick="hide_message(this)" />
+            {% for message in messages %}
+                <div class="message" id="message">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+<script src="{{url_for('static', filename='js/TimeTable.js')}}" charset="windows-1258"></script>
+{% endblock %}

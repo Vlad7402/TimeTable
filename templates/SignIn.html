@@ -5,13 +5,37 @@
 {% endblock %}
 
 {% block userinfo%}
-Вы не авторизованы
 {% endblock %}
 
 {% block article%}
+
  <div class="boxConteiner">
      <div class="box">
-         <h1 class="bigText"> Вход в учётную запись</h1>
+         <form class="form" id="Form" name="form" method="post">
+            <h1 class="bigText" style="margin-left:15px"> Вход в учётную запись</h1>
+            <div class="inputLine">
+                <label for="email"> Введите почту: </label>
+                 <span class="inputFildContainer">
+                     <input type="email" name="email" id="email" placeholder="example@example.ex" class="inputFild"/>
+                </span>
+             </div>
+            <div class="inputLine"><label for="pass"> Введите пароль:
+            </label>
+                <span class="inputFildContainer">
+                    <input type="password" name="pass" id="pass" placeholder="********" class="inputFild"/>
+                </span>
+            </div>
+            <input type="submit" name="SubmitButtonLead" value="Войти" id="SubmitButtonLead" class="ButtonReference">
+         <form/>
+         {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class=flashes id="flashes">
+                    {% for message in messages %}
+                         <div class="error" id="error" style="display:flex">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
      </div>
  </div>
 {% endblock %}
