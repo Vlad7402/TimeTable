@@ -46,14 +46,11 @@ article {
 
 body {
     background-color: #ffffff;
-    color: orangered;
-}
-
-.a {
-    color: red;
 }
 
 footer {
+    display:flex;
+    flex-direction:row;
     margin-left: 0;
     margin-right: 0;
     margin-bottom: 0;
@@ -153,7 +150,7 @@ footer {
 #SignIn{
     margin-right:2%;
 }
-form {
+.form {
     padding: 10px;
     margin: 5px;
     display:flex;
@@ -221,4 +218,16 @@ display: flex;
 }
 .daily_timetable{
     margin-left:15px;
+}
+#night_mode{
+    margin-left:auto;
+    margin-right:5px;
+    height:40px;
+    margin-top:5px;
+}
+#night_mode_btn{
+    background-color:#060829;
+}
+button{
+
 }

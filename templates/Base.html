@@ -7,6 +7,9 @@
         {% block title%}{% endblock %}
     </title>
     <link href="{{url_for('static', filename='css/StyleSheet1.css')}}" rel="stylesheet"/>
+    {% if request.cookies.get('darkmode') == 'Y' %}
+    <link href="{{url_for('static', filename='css/StyleSheetDark.css')}}" rel="stylesheet"/>
+    {% endif %}
 </head>
 <body>
     <header>
@@ -39,6 +42,13 @@
             <a href="https://vk.com/sphinx_an" target="_blank" title="Manager" class="reference">
                 Ковыляева Анастасия
             </a>.
+        </div>
+        <div style="margin-left: auto">
+            <form method="get">
+                <button type="submit" id="night_mode_btn" name="night_mode_btn" value="Y">
+                    <img id="night_mode" src="{{url_for('static', filename='photos/night_mode.png')}}" alt="Alternate Text" />
+                </button>
+            </form>
         </div>
     </footer>
 </body>

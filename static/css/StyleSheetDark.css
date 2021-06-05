@@ -1,0 +1,20 @@
+* {
+    color: white;
+}
+
+body {
+    background-color: #191919;
+}
+.box {
+    background-color: #232323;
+    -webkit-box-shadow: 0px 0px 18px 4px #2a2b22a6;
+}
+.bigText {
+    color: #a7aeff;
+}
+select {
+    color: black;
+}
+input{
+    color: black;
+}

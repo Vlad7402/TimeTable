@@ -42,7 +42,17 @@ class Pair(db.Model):
 @app.route('/')
 @app.route('/MainPage')
 def mainpage():
-    return render_template("MainPage.html")
+    try:
+        if request.args['night_mode_btn'] == 'Y':
+            response = make_response()
+            response.headers['location'] = url_for('mainpage')
+            if request.cookies.get('darkmode') == 'N':
+                response.set_cookie('darkmode', 'Y', max_age=60 * 60 * 24 * 62)
+            else:
+                response.set_cookie('darkmode', 'N', max_age=60 * 60 * 24 * 62)
+            return response, 302
+    except:
+        return render_template("MainPage.html")
 
 
 @app.route('/CreateAccount', methods=['POST', 'GET'])
@@ -63,9 +73,24 @@ def CreateAcccount():
             user = User(firstName=firstName, name=name, group=group, email=email, password=generate_password_hash(password), userType=userType)
             db.session.add(user)
             db.session.commit()
-            return redirect(url_for('SignIn'))
+            user = User.query.filter_by(email=email).first()
+            login_user(user, True, datetime.timedelta(days=62))
+            response = make_response()
+            response.headers['location'] = url_for('TimeTable')
+            response.set_cookie('registration', 'Вы успешно зарегистрировались', max_age=5)
+            return response, 302
     else:
-        return RenderCreateAccountPage(users, False, False)
+        try:
+            if request.args['night_mode_btn'] == 'Y':
+                response = make_response()
+                response.headers['location'] = url_for('CreateAcccount')
+                if request.cookies.get('darkmode') == 'N':
+                    response.set_cookie('darkmode', 'Y', max_age=60 * 60 * 24 * 62)
+                else:
+                    response.set_cookie('darkmode', 'N', max_age=60 * 60 * 24 * 62)
+                return response, 302
+        except:
+            return RenderCreateAccountPage(users, False, False)
 
 
 @app.route('/SignIn', methods=['POST', 'GET'])
@@ -84,7 +109,17 @@ def SignIn():
             flash('Все поля должны быть заполнены')
         return render_template("SignIn.html")
     else:
-        return render_template("SignIn.html")
+        try:
+            if request.args['night_mode_btn'] == 'Y':
+                response = make_response()
+                response.headers['location'] = url_for('SignIn')
+                if request.cookies.get('darkmode') == 'N':
+                    response.set_cookie('darkmode', 'Y', max_age=60 * 60 * 24 * 62)
+                else:
+                    response.set_cookie('darkmode', 'N', max_age=60 * 60 * 24 * 62)
+                return response, 302
+        except:
+            return render_template("SignIn.html")
 
 
 def CheckEmailExist(email):
@@ -136,37 +171,49 @@ def logout():
 @app.route("/TimeTable")
 @login_required
 def TimeTable():
-    flash(current_user.id)
-    pair_time = ['8:00-9:30', '9:40-11:10', '11:20-12:50', "13:15-14:45", "15:00-16:30", "16:40-18:10", "18:20-19:50", "19:55-21:25"]
-    info = current_user.name + ", " + current_user.group
-    day_of_week = datetime.datetime.isoweekday(datetime.datetime.now())
-    week_num = None
-    pairs_tomorrow = None
-    pairs_this_week = None
-    pairs_next_week = None
-    pairs = ['1', '2', '3', "4", "5", "6", "7", "8"]
-    if is_week_firs():
-        week_num = 1
-        pairs_this_week = get_week_timetable(current_user.group, week_num)
-        pairs_next_week = get_week_timetable(current_user.group, week_num + 1)
-    else:
-        week_num = 2
-        pairs_this_week = get_week_timetable(current_user.group, week_num)
-        pairs_next_week = get_week_timetable(current_user.group, week_num - 1)
-    pairs_today = pairs_this_week[day_of_week-1]
-    if day_of_week == 7:
+    try:
+        if request.args['night_mode_btn'] == 'Y':
+            response = make_response()
+            response.headers['location'] = url_for('TimeTable')
+            if request.cookies.get('darkmode') == 'N':
+                response.set_cookie('darkmode', 'Y', max_age=60 * 60 * 24 * 62)
+            else:
+                response.set_cookie('darkmode', 'N', max_age=60 * 60 * 24 * 62)
+            return response, 302
+    except:
+        if request.cookies.get('registration'):
+            flash(request.cookies.get('registration'))
+        pair_time = ['8:00-9:30', '9:40-11:10', '11:20-12:50', "13:15-14:45", "15:00-16:30", "16:40-18:10", "18:20-19:50", "19:55-21:25"]
+        info = current_user.name + ", " + current_user.group
+        day_of_week = datetime.datetime.isoweekday(datetime.datetime.now())
+        week_num = None
+        pairs_tomorrow = None
+        pairs_this_week = None
+        pairs_next_week = None
+        pairs = ['1', '2', '3', "4", "5", "6", "7", "8"]
         if is_week_firs():
-            pairs_tomorrow = get_daily_timetable(current_user.group, 2, 1)
+            week_num = 1
+            pairs_this_week = get_week_timetable(current_user.group, week_num)
+            pairs_next_week = get_week_timetable(current_user.group, week_num + 1)
         else:
-            pairs_tomorrow = get_daily_timetable(current_user.group, 1, 1)
-    else:
-        pairs_tomorrow = get_daily_timetable(current_user.group, week_num, day_of_week + 1)
-    week = ['Понедельник', 'Вторник', 'Среда', "Четверг", "Пятница", "Суббота", "Воскресенье"]
-    lead = current_user.userType == 1
-    return render_template("TimeTable.html", info=info, pair_time=pair_time, pairs=pairs,
-                           week=week, pairs_today=pairs_today, pairs_tomorrow=pairs_tomorrow,
-                           pairs_this_week=pairs_this_week, pairs_next_week=pairs_next_week,
-                           day_of_week=day_of_week, week_num=week_num, lead=lead)
+            week_num = 2
+            pairs_this_week = get_week_timetable(current_user.group, week_num)
+            pairs_next_week = get_week_timetable(current_user.group, week_num - 1)
+        pairs_today = pairs_this_week[day_of_week-1]
+        if day_of_week == 7:
+            if is_week_firs():
+                pairs_tomorrow = get_daily_timetable(current_user.group, 2, 1)
+            else:
+                pairs_tomorrow = get_daily_timetable(current_user.group, 1, 1)
+        else:
+            pairs_tomorrow = get_daily_timetable(current_user.group, week_num, day_of_week + 1)
+        week = ['Понедельник', 'Вторник', 'Среда', "Четверг", "Пятница", "Суббота", "Воскресенье"]
+        lead = current_user.userType == 1
+        return render_template("TimeTable.html", info=info, pair_time=pair_time, pairs=pairs,
+                               week=week, pairs_today=pairs_today, pairs_tomorrow=pairs_tomorrow,
+                               pairs_this_week=pairs_this_week, pairs_next_week=pairs_next_week,
+                               day_of_week=day_of_week, week_num=week_num, lead=lead)
+    return None
 
 
 @app.route("/TimeTableEdit", methods=['POST', 'GET'])
@@ -179,14 +226,23 @@ def TimeTableEdit():
             write_timetable_to_database(request.form, current_user.group)
             return redirect(url_for('TimeTable'))
         else:
-            info = current_user.name + ", " + current_user.group
-            week = ['Понедельник', 'Вторник', 'Среда', "Четверг", "Пятница", "Суббота", "Воскресенье"]
-            week_counter = ['week1', 'week2']
-            pair_num = ['1', '2', '3', "4", "5", "6", "7", "8"]
-            return render_template("TimeTableEdit.html", info=info, week=week, week_counter=week_counter, pair_num=pair_num)
+            try:
+                if request.args['night_mode_btn'] == 'Y':
+                    response = make_response()
+                    response.headers['location'] = url_for('TimeTableEdit')
+                    if request.cookies.get('darkmode') == 'N':
+                        response.set_cookie('darkmode', 'Y', max_age=60 * 60 * 24 * 62)
+                    else:
+                        response.set_cookie('darkmode', 'N', max_age=60 * 60 * 24 * 62)
+                    return response, 302
+            except:
+                info = current_user.name + ", " + current_user.group
+                week = ['Понедельник', 'Вторник', 'Среда', "Четверг", "Пятница", "Суббота", "Воскресенье"]
+                week_counter = ['week1', 'week2']
+                pair_num = ['1', '2', '3', "4", "5", "6", "7", "8"]
+                return render_template("TimeTableEdit.html", info=info, week=week, week_counter=week_counter, pair_num=pair_num)
     else:
         return redirect(url_for('TimeTable'))
-
 
 
 def is_week_firs():
@@ -195,28 +251,6 @@ def is_week_firs():
     current_week_num = datetime.date(current_data.year, current_data.month, current_data.day).isocalendar()[1]
     is_first_week_c = first_week_num % 2
     return (current_week_num % 2) == is_first_week_c
-
-
-def write_timetable_to_database(form, group):
-    week_day = ['1', '2', '3', "4", "5", "6", "7"]
-    week_counter = ['1', '2']
-    pairs = ['1', '2', '3', "4", "5", "6", "7", "8"]
-    for week in week_counter:
-        for day in week_day:
-            for pair in pairs:
-                week_num = week
-                day_num = day
-                pair_num = pair
-                teacher_s = "tn_p" + pair + "_d" + day + "_week" + week
-                subject_s = "sn_p" + pair + "_d" + day + "_week" + week
-                classroom_s = "c_p" + pair + "_d" + day + "_week" + week
-                teacher = form[teacher_s]
-                subject = form[subject_s]
-                classroom = form[classroom_s]
-                pair_to_add = Pair(week_num=week_num, day_num=day_num, pair_num=pair_num, teacher=teacher, subject=subject, classroom=classroom, group=group)
-                db.session.add(pair_to_add)
-                db.session.commit()
-    return None
 
 
 def write_timetable_to_database(form, group):
