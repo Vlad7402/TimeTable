@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title%}
+Ошибка
+{% endblock %}
+
+{% block userinfo%}
+{% endblock %}
+
+{% block article%}
+ <div class="boxConteiner">
+            <div class="box">
+                <h1 class="bigText">Что-то пошло не так!</h1>
+                <br />
+                <br />
+                <div class="description">
+                  {{error_text}}
+                    <br />
+                    <br />
+                </div>
+                <div class="BoxForButtons">
+                    <a href="/CreateAccount" class="ButtonReference" id="CreateAccount" title="Создание нового аккаунта">
+                        Регистрация
+                    </a>
+                    <a href="/SignIn" class="ButtonReference" id="SignIn" title="Подтверждение личности пользователя">
+                        Вход
+                    </a>
+                    <a href="/MainPage" class="ButtonReference" id="TimeTable" title="Главная страница">
+                        На главную
+                    </a>
+                </div>
+            </div>
+        </div>
+{% endblock %}

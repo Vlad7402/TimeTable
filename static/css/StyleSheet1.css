@@ -227,7 +227,5 @@ display: flex;
 }
 #night_mode_btn{
     background-color:#060829;
-}
-button{
-
+    padding-left:5px;
 }

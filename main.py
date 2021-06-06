@@ -60,11 +60,14 @@ def CreateAcccount():
     users = User.query.order_by(User.id).all()
     if request.method == "POST":
         firstName = request.form['firstName']
+        userType = request.form['userType']
         name = request.form['name']
-        group = request.form['group']
+        if userType == "1":
+            group = request.form['Lgroup']
+        else:
+            group = request.form['Sgroup']
         email = request.form['email']
         password = request.form['pass']
-        userType = request.form['userType']
         if CheckEmailExist(email):
             return RenderCreateAccountPage(users, True, False)
         elif CheckGroupExist(group) and userType == "1":
@@ -243,6 +246,18 @@ def TimeTableEdit():
                 return render_template("TimeTableEdit.html", info=info, week=week, week_counter=week_counter, pair_num=pair_num)
     else:
         return redirect(url_for('TimeTable'))
+
+
+@app.errorhandler(404)
+def not_found(error_num):
+    error_text = "Страница не найдена. Проверьте запрос."
+    return render_template("Error.html", error_text=error_text)
+
+
+@app.errorhandler(401)
+def not_autohorized(error_num):
+    error_text = "Вы не авторизованы. Пройдите регисстрацию или выполните вход."
+    return render_template("Error.html", error_text=error_text)
 
 
 def is_week_firs():

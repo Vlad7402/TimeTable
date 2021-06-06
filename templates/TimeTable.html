@@ -19,7 +19,7 @@
              {% for pair in pairs_today %}
              {% if pair.subject %}
              <div class="daily_timetable">
-                 Пара номер {{pairs_today.index(pair) + 1}}, {{pair_time[pairs_today.index(pair)]}}
+                 Пара № {{pairs_today.index(pair) + 1}}, {{pair_time[pairs_today.index(pair)]}}
              </div>
              <br>
              <div class="daily_timetable">
@@ -47,7 +47,7 @@
              {% for pair in pairs_tomorrow %}
              {% if pair.subject %}
              <div class="daily_timetable">
-                 Пара номер {{pairs_tomorrow.index(pair) + 1}}, {{pair_time[pairs_tomorrow.index(pair)]}}
+                 Пара № {{pairs_tomorrow.index(pair) + 1}}, {{pair_time[pairs_tomorrow.index(pair)]}}
              </div>
              <div class="daily_timetable">
                  Предмет: {{pair.subject}}
@@ -80,7 +80,7 @@
                      {% for pair in day %}
                      {% if pair.subject %}
                      <div>
-                         Пара номер {{day.index(pair) + 1}}, {{pair_time[day.index(pair)]}}
+                         Пара № {{day.index(pair) + 1}}, {{pair_time[day.index(pair)]}}
                      </div>
                      <br>
                      <div>
@@ -118,7 +118,7 @@
                      {% for pair in day %}
                      {% if pair.subject %}
                      <div>
-                         Пара номер {{day.index(pair) + 1}}, {{pair_time[day.index(pair)]}}
+                         Пара № {{day.index(pair) + 1}}, {{pair_time[day.index(pair)]}}
                      </div>
                      <br>
                      <div>
@@ -144,16 +144,16 @@
              {% endfor %}
          </div>
          <div class="BoxForButtons">
-             <div onclick="show_today()" class="ButtonReference" id="daily_timetable_btn" title="Создание нового аккаунта">
+             <div onclick="show_today()" class="ButtonReference" id="daily_timetable_btn" title="Расписание на сегодня">
                  Сегодня
              </div>
-             <div onclick="show_tomorrow()" class="ButtonReference" id="tomorrow_timetable_btn" title="Подтверждение личности пользователя">
+             <div onclick="show_tomorrow()" class="ButtonReference" id="tomorrow_timetable_btn" title="Расписание на завтра">
                  Завтра
              </div>
-             <div onclick="show_this_week()" class="ButtonReference" id="timetable_for_this_week_btn" title="Просмотр расписания">
+             <div onclick="show_this_week()" class="ButtonReference" id="timetable_for_this_week_btn" title="Расписание на эту неделю">
                  Эта неделя
              </div>
-             <div onclick="show_next_week()" class="ButtonReference" id="timetable_for_next_week_btn" title="Создание нового аккаунта">
+             <div onclick="show_next_week()" class="ButtonReference" id="timetable_for_next_week_btn" title="Расписание на следующую неделю">
                  След. неделя
              </div>
          </div>

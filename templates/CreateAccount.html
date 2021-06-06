@@ -35,13 +35,13 @@
             <div class="inputLine" id="LeadGroup" style="display:none">
                 <label for="Lgroup"> Введите наименование группы: </label>
                 <span class="inputFildContainer">
-                    <input type="text" name="group" id="Lgroup" placeholder="ПрИ-101" class="inputFild"/>
+                    <input type="text" id="Lgroup" name="Lgroup" placeholder="ПрИ-101" class="inputFild"/>
                 </span>
             </div>
             <div class="inputLine" id="StudentGroup" style="display:none">
                 <label for="Sgroup"> Выберете группу: </label>
                 <span class="inputFildContainer">
-                    <select id="Sgroup" size="1" required>
+                    <select id="Sgroup" size="1" name="Sgroup" required>
                         <option value="0" selected>Группа</option>
                         {% for group in groups %}
                         <option value={{group}}>{{group}}</option>

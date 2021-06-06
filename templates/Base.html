@@ -7,6 +7,7 @@
         {% block title%}{% endblock %}
     </title>
     <link href="{{url_for('static', filename='css/StyleSheet1.css')}}" rel="stylesheet"/>
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='photos/favico.png')}}">
     {% if request.cookies.get('darkmode') == 'Y' %}
     <link href="{{url_for('static', filename='css/StyleSheetDark.css')}}" rel="stylesheet"/>
     {% endif %}
@@ -45,7 +46,7 @@
         </div>
         <div style="margin-left: auto">
             <form method="get">
-                <button type="submit" id="night_mode_btn" name="night_mode_btn" value="Y">
+                <button type="submit" id="night_mode_btn" name="night_mode_btn" value="Y" title="Смена оформления">
                     <img id="night_mode" src="{{url_for('static', filename='photos/night_mode.png')}}" alt="Alternate Text" />
                 </button>
             </form>

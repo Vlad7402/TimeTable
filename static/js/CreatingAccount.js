@@ -40,7 +40,7 @@ function CheckRegistrationForm(element){
         PrintError("Ваша фамилия слишком короткая или слишком длинная");
         return false;
     }
-    if (CheckLenght(form.group.value, 10, 2) && document.getElementById('Lead').checked) {
+    if (CheckLenght(form.Lgroup.value, 10, 2) && document.getElementById('Lead').checked) {
         PrintError("Название группы слишком короткое или слишком длинное");
         return false;
     }
@@ -53,15 +53,12 @@ function CheckRegistrationForm(element){
         return false;
     }
 
-
     if(document.getElementById('Lead').checked)
     {
-        form.Lgroup.id="group";
         form.userType.value=1;
     }
     else
     {
-        form.Sgroup.id="group";
         form.userType.value=0;
     }
     return true;

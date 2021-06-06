@@ -7,7 +7,7 @@ body {
 }
 .box {
     background-color: #232323;
-    -webkit-box-shadow: 0px 0px 18px 4px #2a2b22a6;
+    -webkit-box-shadow: 0px 0px 8px 0px #616358a6;
 }
 .bigText {
     color: #a7aeff;
@@ -16,5 +16,8 @@ select {
     color: black;
 }
 input{
+    color: black;
+}
+option{
     color: black;
 }
